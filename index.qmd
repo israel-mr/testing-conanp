@@ -2,6 +2,14 @@
 format: html
 ---
 
+
+<p>
+    <a href="numeralia_advc.html">Ir a la numeralia de ADVC</a>
+</p>
+
+
+
+
 <p><h2 font-size: 28px; align ='center'><br><b>Áreas Naturales Protegidas Federales <br>según su categoría de manejo</br></br></b></h2></p>
 
 
@@ -1040,9 +1048,6 @@ hc3
 
 
 ```
-
-
-
 
 
 
