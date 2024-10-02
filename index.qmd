@@ -3,56 +3,159 @@ format: html
 ---
 
 
-<p>
-    <a href="numeralia_advc.html">Ir a la numeralia de ADVC</a>
-</p>
-
-
+<a href="numeralia_advc/numeralia_advc" target="_blank">Ver Numeralia ADVC (Sept2024)</a>
 
 
 <p><h2 font-size: 28px; align ='center'><br><b>Áreas Naturales Protegidas Federales <br>según su categoría de manejo</br></br></b></h2></p>
 
 
 <style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-t7k0{border-color:#efefef;color:#333;text-align:left;vertical-align:top}
-.tg .tg-w6io{background-color:#E60000;border-color:#efefef;color:#FFF;font-family:Arial, Helvetica, sans-serif !important;
-  font-weight:bold;text-align:center;vertical-align:top}
-.tg .tg-60gh{background-color:#A87000;border-color:#efefef;color:#FFF;font-weight:bold;text-align:center;vertical-align:top}
-.tg .tg-ly6r{border-color:#efefef;text-align:left;vertical-align:top}
-.tg .tg-3i4j{border-color:#efefef;font-family:Arial, Helvetica, sans-serif !important;text-align:left;vertical-align:top}
-.tg .tg-qoxt{background-color:#ABCD66;border-color:#efefef;color:#FFF;font-weight:bold;text-align:center;vertical-align:top}
-.tg .tg-hvfa{background-color:#BCB800;border-color:#efefef;color:#FFF;font-weight:bold;text-align:center;vertical-align:top}
-.tg .tg-4icx{background-color:#FFBE3B;border-color:#efefef;color:#FFF;font-weight:bold;text-align:center;vertical-align:top}
-.tg .tg-qfl9{background-color:#3166FF;border-color:#efefef;color:#FFF;font-family:Arial, Helvetica, sans-serif !important;
-  font-weight:bold;text-align:center;vertical-align:top}
+/* Estilos generales */
+.tg {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    max-width: 100%;
+    table-layout: auto; /* Permite que las columnas cambien de tamaño según el contenido */
+}
+
+.tg td, .tg th {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    overflow: hidden;
+    padding: 10px 5px;
+    word-break: normal;
+    text-align: center; /* Centra el contenido de las celdas */
+}
+
+.tg th {
+    font-weight: normal;
+}
+
+.tg .tg-t7k0 {
+    border-color: #efefef;
+    color: #333;
+    text-align: left;
+    vertical-align: top;
+}
+
+.tg .tg-w6io {
+    background-color: #E60000;
+    border-color: #efefef;
+    color: #FFF;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: top;
+}
+
+.tg .tg-60gh {
+    background-color: #A87000;
+    border-color: #efefef;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: top;
+}
+
+.tg .tg-ly6r {
+    border-color: #efefef;
+    text-align: left;
+    vertical-align: top;
+}
+
+.tg .tg-3i4j {
+    border-color: #efefef;
+    font-family: Arial, Helvetica, sans-serif !important;
+    text-align: left;
+    vertical-align: top;
+}
+
+.tg .tg-qoxt {
+    background-color: #ABCD66;
+    border-color: #efefef;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: top;
+}
+
+.tg .tg-hvfa {
+    background-color: #BCB800;
+    border-color: #efefef;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: top;
+}
+
+.tg .tg-4icx {
+    background-color: #FFBE3B;
+    border-color: #efefef;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: top;
+}
+
+.tg .tg-qfl9 {
+    background-color: #3166FF;
+    border-color: #efefef;
+    color: #FFF;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: top;
+}
+
+/* Hacer la tabla scrollable en pantallas pequeñas */
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Suaviza el desplazamiento en dispositivos táctiles */
+}
+
+/* Media query para dispositivos móviles */
+@media screen and (max-width: 600px) {
+    .tg td, .tg th {
+        padding: 8px 3px;
+        font-size: 12px;
+    }
+
+    .tg {
+        font-size: 12px;
+    }
+}
 </style>
-<div style = "display: flex; justify-content:center;">
-<table class="tg"><thead>
-  <tr>
-    <th class="tg-qoxt">RB</th>
-    <th class="tg-ly6r">Reservas de la Biosfera </th>
-    <th class="tg-60gh">PN</th>
-    <th class="tg-t7k0">Parques Nacionales</th>
-    <th class="tg-w6io">MN</th>
-    <th class="tg-3i4j">Monumentos Naturales</th>
-  </tr></thead>
-<tbody>
-  <tr>
-    <td class="tg-hvfa">APRN</td>
-    <td class="tg-t7k0">Áreas de Protección de Recursos Naturales</td>
-    <td class="tg-4icx">APFF</td>
-    <td class="tg-ly6r">Áreas de Protección de Flora y Fauna</td>
-    <td class="tg-qfl9">SANT</td>
-    <td class="tg-3i4j">Santuarios</td>
-  </tr>
-</tbody>
-</table>
+
+<!-- Estructura de la tabla con contenedor para scroll -->
+<div class="table-container" style="display: flex; justify-content: center;">
+  <table class="tg">
+    <thead>
+      <tr>
+        <th class="tg-qoxt">RB</th>
+        <th class="tg-ly6r">Reservas de la Biosfera </th>
+        <th class="tg-60gh">PN</th>
+        <th class="tg-t7k0">Parques Nacionales</th>
+        <th class="tg-w6io">MN</th>
+        <th class="tg-3i4j">Monumentos Naturales</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="tg-hvfa">APRN</td>
+        <td class="tg-t7k0">Áreas de Protección de Recursos Naturales</td>
+        <td class="tg-4icx">APFF</td>
+        <td class="tg-ly6r">Áreas de Protección de Flora y Fauna</td>
+        <td class="tg-qfl9">SANT</td>
+        <td class="tg-3i4j">Santuarios</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
+
 
 <br>
 
@@ -167,8 +270,10 @@ data_numero_anp <- manejo_filtrado %>%
 data_numero_anp <- lapply(1:nrow(data_numero_anp), function(i) {
   list(y = data_numero_anp$num_anp[i],
        color = data_numero_anp$color[i],
-       superficie = data_numero_anp$superficie_total[i])
+       superficie =scales::comma(data_numero_anp$superficie_total[i])
+       )
 })
+
 ```
 
 
@@ -176,16 +281,16 @@ data_numero_anp <- lapply(1:nrow(data_numero_anp), function(i) {
 ```{r echo=FALSE}
 hc <- highchart() %>%
   hc_chart(type = "column") %>%
-  hc_xAxis(
-    categories = manejo_filtrado$abreviatura,
-           labels = list(style = list(color = 'black'))
+  # hc_xAxis(
+  #   categories = manejo_filtrado$abreviatura,
+  #          labels = list(style = list(color = 'black'))
 
   
-  # hc_xAxis(categories = c("Parque Nacional",
-  #                           "Área de Protección de Flora y Fauna",
-  #                           "Área de Protección de Recursos Naturales",
-  #                           "Monumento Natural", "Reservas de la Biosfera", "Santuarios"),
-  #          labels = list(style = list(color = 'black', fontSize = '13px'))
+  hc_xAxis(categories = c("Parque Nacional",
+                            "Área de Protección de Flora y Fauna",
+                            "Área de Protección de Recursos Naturales",
+                            "Monumento Natural", "Reservas de la Biosfera", "Santuarios"),
+           labels = list(style = list(color = 'black', fontSize = '13px'))
 
  )%>%
   hc_yAxis_multiples(
@@ -1262,9 +1367,9 @@ data_sup <- mex_geojson |>
   select(code = entidad_federativa) |>
   mutate(value = 1e5 * abs(rt(nrow(mex_geojson), df = 10)))
 
-mapdata <- get_data_from_map(download_map_data("countries/mx/mx-all"))
+#mapdata <- get_data_from_map(download_map_data("countries/mx/mx-all"))
 
-mapdata=mapdata[-1,]
+#mapdata=mapdata[-1,]
 
  
 
@@ -1295,41 +1400,41 @@ data_mexico$hover_text <- paste("<b>",data_mexico$Entidad,"</b>",
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-hc_mapmex<-hcmap("countries/mx/mx-all", 
-      data = data_mexico, 
-      value = "total",
-      joinBy = c("woe-name", "Entidad"),
-      name ="<span style=\"font-size: 12px\">Superficie protegida</span>",
-      dataLabels = list(enabled = TRUE, 
-                        format = '{point.name}'),
-      borderColor = "white", borderWidth = 0.5,
-      tooltip = list(
-        valueDecimals = 0, 
-        valuePrefix = "<br>Superficie:", valueSuffix = " ha",
-        useHTML = TRUE,
-        pointFormat = '{point.hover_text}'
-        
-        )
-      ) %>%
-        hc_mapNavigation(enabled = TRUE) %>%
-        hc_title(text="",
-          align = "center",
-                 style = list(color = "#000000", 
-                              fontWeight = "bold"))%>%
-  hc_colorAxis(
-    minColor = "#B4EEB4", 
-    maxColor = "#2A6C5C",
-    title = list(
-      text = "Superficie en hectáreas<br>(M: Millones)",
-      style = list(
-        color = "black",
-        fontSize = '14px'
-      )
-    )) %>%
-  hc_credits(enabled =FALSE)%>%
-  hc_exporting(enabled = TRUE)
-
-hc_mapmex
+# hc_mapmex<-hcmap("countries/mx/mx-all", 
+#       data = data_mexico, 
+#       value = "total",
+#       joinBy = c("woe-name", "Entidad"),
+#       name ="<span style=\"font-size: 12px\">Superficie protegida</span>",
+#       dataLabels = list(enabled = TRUE, 
+#                         format = '{point.name}'),
+#       borderColor = "white", borderWidth = 0.5,
+#       tooltip = list(
+#         valueDecimals = 0, 
+#         valuePrefix = "<br>Superficie:", valueSuffix = " ha",
+#         useHTML = TRUE,
+#         pointFormat = '{point.hover_text}'
+#         
+#         )
+#       ) %>%
+#         hc_mapNavigation(enabled = TRUE) %>%
+#         hc_title(text="",
+#           align = "center",
+#                  style = list(color = "#000000", 
+#                               fontWeight = "bold"))%>%
+#   hc_colorAxis(
+#     minColor = "#B4EEB4", 
+#     maxColor = "#2A6C5C",
+#     title = list(
+#       text = "Superficie en hectáreas<br>(M: Millones)",
+#       style = list(
+#         color = "black",
+#         fontSize = '14px'
+#       )
+#     )) %>%
+#   hc_credits(enabled =FALSE)%>%
+#   hc_exporting(enabled = TRUE)
+# 
+# hc_mapmex
 
 #saveWidget(as_widget(hc_mapmex), "plt-mapmxanp.html")
 
@@ -1339,6 +1444,122 @@ hc_mapmex
 
 
 
+```{r echo=FALSE, warning=FALSE, message=FALSE, include=FALSE}
+#intento con leaflet del mapa  01 de octubre
+
+
+library(leaflet)
+library(sf)       
+library(readr)    
+library(dplyr)   
+
+
+
+anp_shapefile <- st_read("data/shapefiles/227_ANP_ITRF08_24092024.shp")
+entidades_anp <- read_csv("data/data-entidadesanp.csv", show_col_types = FALSE)
+colnames(entidades_anp)<- c("ESTADOS",
+                            "CAT_MANEJO",
+                            "NOMBRE",
+                            "superficie_total")
+estados_shapefile <- st_read("data/shapefiles/destdv1gw.shp")
+
+anp_shapefile <- anp_shapefile %>%
+  left_join(entidades_anp, by = "NOMBRE")
+```
+
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(leaflet.extras)
+
+entidades_anp <- entidades_anp %>%
+  mutate(ESTADOS = toupper(ESTADOS)) 
+ 
+superficie_estados <- entidades_anp %>%
+  group_by(ESTADOS) %>%
+  summarise(superficie_total_estado = sum(superficie_total, na.rm = TRUE))
+
+ 
+estados_merged <- estados_shapefile %>%
+  left_join(superficie_estados, by = c("ENTIDAD" = "ESTADOS"))
+
+ 
+#pal_estados <- colorNumeric(palette = "YlOrRd", domain = estados_merged$superficie_total_estado)
+pal_estados <- colorNumeric(
+  palette = c("#B4EEB4", "#2A6C5C"),  # Colores personalizados
+  domain = estados_merged$superficie_total_estado
+)
+
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(
+    data = estados_merged,
+    fillColor = ~pal_estados(superficie_total_estado),
+    color = "#BDBDC3",
+    weight = 1,
+    opacity = 1,
+    fillOpacity = 0.7,
+    group = "Superficie ANP por Estado",
+    popup = ~paste("<b>",ENTIDAD,"</b>",
+                                "cuenta con", "<b>","num","</b>", "ANP,"
+                                ,"<br>con una superficie terrestre total de", 
+                               "<b>", scales::comma(superficie_total_estado),"</b>","ha"
+                                     )
+      
+      
+      # paste("<strong>Estado:</strong>", ENTIDAD, "<br>",
+      #              "<strong>Superficie ANP Total:</strong>", superficie_total_estado, "ha")
+    
+    
+  ) %>%
+  #capa anp
+    addPolygons(
+    data = anp_shapefile,
+    fillColor = "transparent",   
+    color = "gray",   
+    weight = 2,
+    opacity = 1,
+    fillOpacity = 0.7,
+    dashArray = "5, 5",
+    group = "Áreas Naturales Protegidas",
+    popup = ~paste("<strong>ANP:</strong>", NOMBRE, "<br>",
+                   "<strong>Superficie:</strong>", scales::comma(SUPERFICIE), "ha"),
+    
+     highlightOptions = highlightOptions(
+      weight = 3,
+      color = "black",    # Color del borde al hacer hover
+      fillOpacity = 0.7,  # Cambiar la opacidad
+      bringToFront = TRUE
+    )
+  ) %>%
+  
+  addLayersControl(
+    overlayGroups = c("Superficie ANP por Estado", "Áreas Naturales Protegidas"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  
+  hideGroup("Áreas Naturales Protegidas") %>% 
+  addLegend(
+    pal = pal_estados, 
+    values = estados_merged$superficie_total_estado, 
+    opacity = 0.7, 
+    title = "Superficie ANP Total (ha)", 
+    position = "bottomright"
+  )%>%
+ htmlwidgets::onRender(
+  "function(el, x) {
+    // Estilos de efecto 'frosted glass'
+    el.style.padding = '20px';  // Añadir padding
+    el.style.border = '2px solid black';  // Añadir borde elegante
+    el.style.borderRadius = '15px'; // Bordes redondeados
+    el.style.backgroundColor = 'rgba(255, 255, 255, 0.7)'; // Fondo blanco semitransparente
+    el.style.backdropFilter = 'blur(10px)'; // Efecto de desenfoque en el fondo
+    el.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)'; // Sombra para dar profundidad
+  }"
+)
+
+
+```
 
 
 
