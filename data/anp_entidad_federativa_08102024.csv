@@ -1,4 +1,4 @@
-id,entidad_federativa,categoria_manejo,anp,superficie
+id,entidad_federativa,categoria_manejo,nombre_anp,suma_superficie_dentro_entidad
 1,Aguascalientes,APRN,C.A.D.N.R. 001 Pabellón,57980
 2,Aguascalientes,APRN,C.A.D.N.R. 043 Estado de Nayarit,65861
 3,Baja California,RB,Alto Golfo de California y Delta del Río Colorado,193461

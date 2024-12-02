@@ -1,14 +1,13 @@
 ---
 format: html
 ---
+
 <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 <style>
 body {
     font-family: 'Montserrat';font-size: 22px;
 }
 </style>
-
-
 
 <style>
 .button {
@@ -186,14 +185,11 @@ body {
     </tbody>
   </table>
 </div>
-
-
-<br>
-
+ 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 #library
-rm(list=ls())
+#rm(list=ls())
 library(tidyverse)
 library(sf)
 library(maps)
@@ -212,25 +208,57 @@ library(htmlwidgets)
 
 
 ```{r echo=FALSE, include=FALSE}
-library(RPostgres)
+# library(RPostgres)
+# 
+# 
+# con <- dbConnect(
+#   RPostgres::Postgres(),
+#   dbname = "sub_monitoreo",   
+#   host = "localhost",                     
+#   port = 5432,  
+#   user = "postgres", 
+#   password = "monitoreo2024"
+# )
+# 
+# tables = dbListTables(con)
 
 
+library(RMySQL)  # O RMariaDB
+# 
+# con <- dbConnect(
+#   RMySQL::MySQL(),
+#   dbname = "monitoreo",
+#   host = "localhost",  
+#   username = "root",
+#   password = ""
+# )
+# 
+# df_anp <- dbGetQuery(con, "SELECT * FROM anp")
+# df_region <- dbGetQuery(con, "SELECT * FROM region")
+# df_anpporregiones <- dbGetQuery(con, "SELECT * FROM regionales")
+# df_catmanejo <- dbGetQuery(con, "SELECT * FROM cat_manejo")
+# df_vegetation <- dbGetQuery(con, "SELECT * FROM vegetation")
+
+#write_excel_csv(df_anp,"datos_anp30sept24.xlsx")
+```
+
+
+     
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 con <- dbConnect(
-  RPostgres::Postgres(),
-  dbname = "sub_monitoreo",   
-  host = "localhost",                     
-  port = 5432,  
-  user = "postgres", 
-  password = "monitoreo2024"
+  RMySQL::MySQL(),
+  dbname = "numeralia",
+  host = "localhost",  
+  username = "root",
+  password = ""
 )
-
-tables = dbListTables(con)
-
 
 df_anp <- dbGetQuery(con, "SELECT * FROM anp")
 df_region <- dbGetQuery(con, "SELECT * FROM region")
+df_anpporregiones <- dbGetQuery(con, "SELECT * FROM regionales")
 df_catmanejo <- dbGetQuery(con, "SELECT * FROM cat_manejo")
-#write_excel_csv(df_anp,"datos_anp30sept24.xlsx")
+df_vegetation <- dbGetQuery(con, "SELECT * FROM vegetation")
+entidades_anp <- dbGetQuery(con, "SELECT * FROM surfaceanp_entity")
 ```
 
 
@@ -254,16 +282,21 @@ library(dplyr)
 
 summary_catmanejo <- df_anp %>%
   left_join(df_catmanejo, by = "id_catmanejo") %>%  
-  group_by(abreviatura) %>%   
+  group_by(abrev_cat) %>%   
   summarise(
     num_anp = n(),   
-    superficie_total = sum(superficie_total, na.rm = TRUE)   
+    superficie_total = round(sum(sup_total, na.rm = TRUE))   
   ) %>%
   mutate(
     total_superficie = sum(superficie_total),  
-    Porcentaje = round((superficie_total / total_superficie) * 100,3)  
+    Porcentaje = round((superficie_total / total_superficie) * 100,2)  
   ) %>%
-  select(abreviatura, num_anp, superficie_total, Porcentaje)
+  select(abrev_cat, num_anp, superficie_total, Porcentaje)
+
+ 
+
+
+
 
 ```
 
@@ -278,20 +311,18 @@ manejo_filtrado <- summary_catmanejo %>%
 categorias_ordenadas <- c("PN","APFF",  "RB", "SANT", "APRN", "MN")
 
 manejo_filtrado <- manejo_filtrado %>%
-   filter(abreviatura %in% categorias_ordenadas) 
+   filter(abrev_cat %in% categorias_ordenadas) 
 
-manejo_filtrado$abreviatura <- factor(manejo_filtrado$abreviatura, 
+manejo_filtrado$abrev_cat <- factor(manejo_filtrado$abrev_cat, 
                                     levels = categorias_ordenadas)
 
-
-
 manejo_filtrado <- manejo_filtrado %>%
-  mutate(color = cols_sig[abreviatura]
+  mutate(color = cols_sig[abrev_cat]
          )
 
 data_numero_anp <- manejo_filtrado %>%
-  arrange(match(abreviatura, categorias_ordenadas)) %>%
-  mutate(color = cols_sig) %>%
+  arrange(match(abrev_cat, categorias_ordenadas)) %>%
+ # mutate(color = cols_sig) %>%
   select(num_anp, color, superficie_total)
 
 data_numero_anp <- lapply(1:nrow(data_numero_anp), function(i) {
@@ -308,16 +339,16 @@ data_numero_anp <- lapply(1:nrow(data_numero_anp), function(i) {
 ```{r echo=FALSE}
 hc <- highchart() %>%
   hc_chart(type = "column") %>%
-  # hc_xAxis(
-  #   categories = manejo_filtrado$abreviatura,
-  #          labels = list(style = list(color = 'black'))
+  hc_xAxis(
+    categories = manejo_filtrado$abrev_cat,
+           labels = list(style = list(color = 'black'))
 
   
-  hc_xAxis(categories = c("Parque Nacional",
-                            "Área de Protección de Flora y Fauna",
-                            "Área de Protección de Recursos Naturales",
-                            "Monumento Natural", "Reservas de la Biosfera", "Santuarios"),
-           labels = list(style = list(color = 'black', fontSize = '13px'))
+  # hc_xAxis(categories = c("Parque Nacional",
+  #                           "Área de Protección de Flora y Fauna",
+  #                           "Área de Protección de Recursos Naturales",
+  #                           "Monumento Natural", "Reservas de la Biosfera", "Santuarios"),
+  #          labels = list(style = list(color = 'black', fontSize = '13px'))
 
  )%>%
   hc_yAxis_multiples(
@@ -432,7 +463,7 @@ hc_add_series(
   ) 
 
 hc
-saveWidget(as_widget(hc), "plt-numanp.html")
+#saveWidget(as_widget(hc), "plt-numanp.html")
 
 ```
 
@@ -697,7 +728,7 @@ saveWidget(as_widget(hc), "plt-numanp.html")
 
 
 
-<h2 font-size: 28px; align ='center'><br><br><b>Protección del medio terrestre y marino <br>en las ANP Federales</br></b></h2>
+<h2 font-size: 28px; align ='center'><br><br><b>Superficie protegida del territorio nacional en las ANP federales</br></b></h2>
 
 
 ```{r echo=FALSE}
@@ -705,8 +736,8 @@ resumen_superficies <- df_anp %>%
   group_by(id_superficie) %>%  # Agrupar por id_superficie
   summarise(
     num_anp = n(),  # Contar cuántas ANP tienen ese tipo de superficie
-    superficie_t_total = sum(superficie_terrestre, na.rm = TRUE),
-    superficie_m_total = sum(superficie_marina, na.rm = TRUE)
+    superficie_t_total = sum(sup_terrestre, na.rm = TRUE),
+    superficie_m_total = sum(sup_marina, na.rm = TRUE)
   )
 
 
@@ -720,7 +751,7 @@ resumen_superficies <- df_anp %>%
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 resumen_superficie = resumen_superficies
-total_sup = sum(df_anp$superficie_total)
+total_sup = sum(df_anp$sup_total)
 sup_nacional_terrestre = 196437500.00
 sup_nacional_marina =314992000.00
 
@@ -728,9 +759,9 @@ sup_nacional_marina =314992000.00
 
 
 ambientes <- data.frame(
-  Tipo = c("<span style=\"font-size: 12px\"> <b>Medio terrestre</b></span>", 
+  Tipo = c("<span style=\"font-size: 12px\"> <b>Superficie terrestre</b></span>", 
           # "<span style=\"font-size: 12px\"> <b>Medio costero marino</b></span>",
-         "<span style=\"font-size: 12px\"> <b>Medio marino</b></span>"
+         "<span style=\"font-size: 12px\"> <b>Superficie marina</b></span>"
            ),
   Superficie = c(round(sum(resumen_superficies$superficie_t_total),3), 
                  round(sum(resumen_superficies$superficie_m_total),3)
@@ -1000,6 +1031,9 @@ fig
 <h2 font-size: 28px; align ='center'><br><br><b>Protección de tipos de vegetación y uso de suelo <br> en las ANP Federales</br></b> </h2>
 
 
+
+
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 tipos_vegetacion <- c("Agroecosistemas", "Bosque de Coníferas", "Bosque de Encino",
                        "Bosque Mesófilo de Montaña", "Manglar", "Matorral Xerófilo",
@@ -1018,11 +1052,11 @@ porcentaje_anp_federal <- c(1.22, 2.47, 2.64,
 
 
 #vegetacion = read_csv("data/vegetacion_tb.csv", show_col_types = FALSE)
-vegetacion <- dbGetQuery(con, "SELECT * FROM vegetacion")
+#vegetacion <- dbGetQuery(con, "SELECT * FROM vegetacion")
 
 
 
-
+vegetacion = df_vegetation
 vegetacion$color = rep("#2c3e50", dim(vegetacion)[1])
 
 # vegetacion <- data.frame(
@@ -1033,22 +1067,22 @@ vegetacion$color = rep("#2c3e50", dim(vegetacion)[1])
 # )
 
  
-vegetacion <- vegetacion %>% arrange((superficie)) # desc
+vegetacion <- vegetacion %>% arrange((surface)) # desc
 
 df.vegetacion = vegetacion
 
-vegetacion <- vegetacion[c(which(vegetacion$tipo_vegetacion == "Mar Territorial"),
+vegetacion <- vegetacion[c(which(vegetacion$type == "Mar Territorial"),
                            setdiff(1:nrow(vegetacion),
                                    which(vegetacion$tipo_vegetacion == "Mar Territorial"))), ]
 vegetacion=vegetacion[-1,] 
 
 
-vegetacion <- vegetacion[order(-vegetacion$superficie), ]
+vegetacion <- vegetacion[order(-vegetacion$surface), ]
 #df = as.data.frame(resumen_ordenado)
 #resumen_ordenado <- df[order(df$total), ]
 
-vegetacion$hover_text <- paste("<b>",vegetacion$tipo_vegetacion,"</b>",
-  "<br>Superficie en ANP:", "<b>",scales::comma(vegetacion$superficie),"</b>", "ha",# vegetacion$Superficie_ANP,
+vegetacion$hover_text <- paste("<b>",vegetacion$type,"</b>",
+  "<br>Superficie en ANP:", "<b>",scales::comma(vegetacion$surface),"</b>", "ha",# vegetacion$Superficie_ANP,
                                "<br>Porcentaje en ANP Federales:", "<b>",vegetacion$porcentaje,"</b>")
 
 
@@ -1056,14 +1090,23 @@ vegetacion$hover_text <- paste("<b>",vegetacion$tipo_vegetacion,"</b>",
 ```
 
 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+tb_vegetacion <- dbGetQuery(con, "SELECT * FROM vegetation")
+tb_vegetacion$hover_text <- paste("<b>",vegetacion$type,"</b>",
+  "<br>Superficie en ANP:", "<b>",scales::comma(vegetacion$surface),"</b>", "ha",# vegetacion$Superficie_ANP,
+                               "<br>Porcentaje en ANP Federales:", "<b>",vegetacion$porcentaje,"</b>")
+
+```
+
 ```{r echo=FALSE, include=FALSE}
 
 
-colnames(vegetacion)[2] <- "name"
-colnames(vegetacion)[3] <- "y"
-colnames(vegetacion)[4] <- "r"
+colnames(tb_vegetacion)[2] <- "name"
+colnames(tb_vegetacion)[3] <- "y"
+colnames(tb_vegetacion)[4] <- "r"
 # 
-df1 <-select(vegetacion, name, y, hover_text)
+df1 <-select(tb_vegetacion, name, y, hover_text)
+df1 <- df1[order(-df1$y), ]
 # 
 # highchart() %>%
 #   hc_chart(type = 'bar') %>%
@@ -1157,7 +1200,7 @@ hc3 <- highchart( ) %>%
 
 hc3
 
-saveWidget(as_widget(hc3), "plt-protecanp.html")
+#saveWidget(as_widget(hc3), "plt-protecanp.html")
 
 
 
@@ -1171,32 +1214,42 @@ saveWidget(as_widget(hc3), "plt-protecanp.html")
 <h2 font-size: 28px; align ='center'><br><br><b>Distribución de la superficie terrestre protegida <br> por entidad federativa</br></b> </h2>
 
 ```{r echo=FALSE}
-entidades_anp <- read_csv("data/data-entidadesanp.csv",show_col_types = FALSE)
+# entidades_anp1 <- read_csv("data/data-entidadesanp.csv",show_col_types = FALSE)
+# entidades_anp <- read_csv("data/anp_entidad_federativa_08102024.csv",show_col_types = FALSE)
+# entidades_anp <- read_csv("data/superficie_entidades21112024.csv",show_col_types = FALSE)
+entidades_anp <- dbGetQuery(con, "SELECT * FROM surfaceanp_entity")
+
+```
+
+
+```{r echo=FALSE}
 entidades_anp = as.data.frame(entidades_anp)
 
-total_entidades <- entidades_anp %>%
-  group_by(entidad_federativa) %>%
-  summarise(total = sum(suma_superficie_dentro_entidad),
-            num_anp = n()
-            )
+# total_entidades <- entidades_anp %>%
+#   group_by(entidad_federativa) %>%
+#   summarise(total = sum(suma_superficie_dentro_entidad),
+#             num_anp = n()
+#             )
 
-resumen_ordenado <- total_entidades[order(total_entidades$total), ] #order(-total
+resumen_ordenado <- entidades_anp[order(entidades_anp$surface_entity), ] #order(-total
+
 df = as.data.frame(resumen_ordenado)
-resumen_ordenado <- df[order(-df$total), ]
+resumen_ordenado <- df[order(-df$surface_entity), ]
 ```
 
 ```{r echo=FALSE, fig.dim=c(6,6)}
-colnames(resumen_ordenado)[1] <- "name"
-colnames(resumen_ordenado)[2] <- "y"
+colnames(resumen_ordenado)[2] <- "name"
+colnames(resumen_ordenado)[4] <- "y"
 
 color_high <- cols_ident[1] #'#3E7C24'
 color_low <- '#7CCD7C'
 
 resumen_ordenado$hover_text <- paste("<b>", resumen_ordenado$name, "</b>",
                                      "<br> Superficie protegida", 
-                                     "<b>",scales::comma(resumen_ordenado$y),"</b>","ha",
-                                     "<br>Cuenta con:",
-                                     "<b>",resumen_ordenado$num_anp,"</b>", "ANP")
+                                     "<b>",scales::comma(resumen_ordenado$y),"</b>","ha"#,
+                                     #"<br>Cuenta con:",
+                                     #"<b>",resumen_ordenado$num_anp,"</b>", "ANP"
+                                     )
 df1 = select(resumen_ordenado, name, y, hover_text)
 
 hc_map<- highchart() %>%
@@ -1261,7 +1314,7 @@ hc_map
   #            )%>%
 
 
-saveWidget(as_widget(hc_map), "plt-mapcanp.html")
+#saveWidget(as_widget(hc_map), "plt-mapcanp.html")
 ```
  
 
@@ -1270,23 +1323,23 @@ saveWidget(as_widget(hc_map), "plt-mapcanp.html")
 
 
 ```{r echo=FALSE}
-categoriaspentidad <- entidades_anp %>%
-  group_by(entidad_federativa, categoria_manejo) %>%
-  summarise(conteo = n(),
-            suma_superficie = sum(suma_superficie_dentro_entidad),
-            .groups = 'drop') %>%
-  arrange(entidad_federativa, categoria_manejo)
+# categoriaspentidad <- entidades_anp %>%
+#   group_by(entidad_federativa, categoria_manejo) %>%
+#   summarise(conteo = n(),
+#             suma_superficie = sum(suma_superficie_dentro_entidad),
+#             .groups = 'drop') %>%
+#   arrange(entidad_federativa, categoria_manejo)
 ```
 
 
 
 
 ```{r echo=FALSE}
-categoria_manejo <- aggregate(suma_superficie_dentro_entidad ~ categoria_manejo, 
-                              data = entidades_anp,
-                              FUN = sum)
-
-resumen_ordenado <- categoria_manejo[order(categoria_manejo$suma_superficie_dentro_entidad), ]
+# categoria_manejo <- aggregate(suma_superficie_dentro_entidad ~ categoria_manejo, 
+#                               data = entidades_anp,
+#                               FUN = sum)
+# 
+# resumen_ordenado <- categoria_manejo[order(categoria_manejo$suma_superficie_dentro_entidad), ]
 
 ```
 
@@ -1345,12 +1398,12 @@ mex_map <- st_read("data/shapefiles/destdv1gw.shp")
 ```{r include=FALSE}
 cve_edos <- sprintf("%02d", 1:32)
 #cve_edos<- paste0("0", cve_edos)
-total_entidades$CVE_EDO <- cve_edos
+entidades_anp$CVE_EDO <- cve_edos
 #write.csv(total_entidades, "total_anp_edos.csv")
 ```
 ```{r include=FALSE}
 mex_map_anp <- mex_map %>%
-  left_join(total_entidades)
+  left_join(entidades_anp)
 #head(mex_map_anp)
 ```
 
@@ -1369,7 +1422,7 @@ mex_geojson_text <- readLines("mex_map_anp.geojson") %>%
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 data_sup <- mex_geojson |>
-  select(code = entidad_federativa) |>
+  select(code = entity) |>
   mutate(value = 1e5 * abs(rt(nrow(mex_geojson), df = 10)))
 
 #mapdata <- get_data_from_map(download_map_data("countries/mx/mx-all"))
@@ -1378,14 +1431,14 @@ data_sup <- mex_geojson |>
 
  
 
-data_mexico <- total_entidades %>% 
-  select(Entidad = entidad_federativa, total, num_anp)# %>% 
+data_mexico <- entidades_anp %>% 
+  select(Entidad = entity, surface_entity)# %>% , num_anp
   #mutate(ANP = num_anp
       #  )
 
-data_mexico <- total_entidades %>%
-  mutate(entidad_federativa = ifelse(entidad_federativa == "Ciudad de México", "Distrito Federal", entidad_federativa)) %>%
-  select(Entidad = entidad_federativa, total, num_anp)
+data_mexico <- entidades_anp %>%
+  mutate(entity = ifelse(entity == "Ciudad de México", "Distrito Federal", entity)) %>%
+  select(Entidad = entity, surface_entity)#, num_anp
 
 #glimpse(data_mexico)
 ```
@@ -1393,9 +1446,8 @@ data_mexico <- total_entidades %>%
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 data_mexico$hover_text <- paste("<b>",data_mexico$Entidad,"</b>",
-                                "cuenta con", "<b>",data_mexico$num_anp,"</b>", "ANP,"
-                                ,"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;con una superficie terrestre total de", 
-                               "<b>", scales::comma(data_mexico$total),"</b>","ha"
+                                "cuenta con una superficie terrestre total protegida de", 
+                               "<b>", scales::comma(data_mexico$surface_entity),"</b>","ha"
                                      )
 #df1 = select(resumen_ordenado, name, y, hover_text)
 
@@ -1405,9 +1457,9 @@ data_mexico$hover_text <- paste("<b>",data_mexico$Entidad,"</b>",
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
- hc_mapmex<-hcmap("countries/mx/mx-all",
+hc_mapmex<-hcmap("countries/mx/mx-all",
        data = data_mexico,
-       value = "total",
+       value = "surface_entity",
        joinBy = c("woe-name", "Entidad"),
        name ="<span style=\"font-size: 12px\">Superficie protegida</span>",
        dataLabels = list(enabled = TRUE,
@@ -1441,10 +1493,46 @@ data_mexico$hover_text <- paste("<b>",data_mexico$Entidad,"</b>",
 
  hc_mapmex
 
-saveWidget(as_widget(hc_mapmex), "anp_charts/plt-mapmxanp.html")
-
-
+#saveWidget(as_widget(hc_mapmex), "anp_charts/plt-mapmxanp.html")
 ```
+
+
+```{r  eval=FALSE,echo=FALSE, warning=FALSE}
+ 
+library(sf)
+library(tmap)
+library(dplyr)
+ 
+
+shapefile <- st_read("ruta/a/tu/archivo/estados_mexico.shp")
+ 
+set.seed(123)
+poblacion <- data.frame(
+  NOM_ENT = shapefile$NOM_ENT,
+  poblacion = sample(1000000:10000000, size = nrow(shapefile), replace = TRUE)
+)
+
+ 
+mapa_datos <- left_join(shapefile, poblacion, by = "NOM_ENT")
+
+ 
+tm_shape(mapa_datos) +
+  tm_borders() +
+  tm_fill("poblacion", palette = "YlOrRd", style = "cont", title = "Población") +
+  tm_layout(main.title = "Mapa de Coropletas de Población de los Estados de México")
+
+ 
+```
+
+
+
+
+
+
+
+
+
+
 
 
 

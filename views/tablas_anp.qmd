@@ -29,46 +29,89 @@ library(readr)
 
 
 ```{r echo=FALSE, include=FALSE}
-con <- dbConnect(
-  RPostgres::Postgres(),
-  dbname = "sub_monitoreo",   
-  host = "localhost",                     
-  port = 5432,  
-  user = "postgres", 
-  password = "monitoreo2024"
-)
-
-tables = dbListTables(con)
-
-
-df_anp <- dbGetQuery(con, "SELECT * FROM anp")
-df_region <- dbGetQuery(con, "SELECT * FROM region")
-df_catmanejo <- dbGetQuery(con, "SELECT * FROM cat_manejo")
+# con <- dbConnect(
+#   RPostgres::Postgres(),
+#   dbname = "sub_monitoreo",   
+#   host = "localhost",                     
+#   port = 5432,  
+#   user = "postgres", 
+#   password = "monitoreo2024"
+# )
+# 
+# tables = dbListTables(con)
 
 
+# df_anp <- dbGetQuery(con, "SELECT * FROM anp")
+# df_region <- dbGetQuery(con, "SELECT * FROM region")
+# df_catmanejo <- dbGetQuery(con, "SELECT * FROM cat_manejo")
+```
+
+
+```{r echo=FALSE, include=FALSE}
+
+ library(RMySQL)  # O RMariaDB
+# 
+# con <- dbConnect(
+#   RMySQL::MySQL(),
+#   dbname = "monitoreo",
+#   host = "localhost",  
+#   username = "root",
+#   password = ""
+# )
+# 
+# tables = dbListTables(con)
+# df_anp <- dbGetQuery(con, "SELECT * FROM anp")
+# df_region <- dbGetQuery(con, "SELECT * FROM region")
+# df_anpporregiones <- dbGetQuery(con, "SELECT * FROM regionales")
+# df_catmanejo <- dbGetQuery(con, "SELECT * FROM cat_manejo")
+# df_vegetation <- dbGetQuery(con, "SELECT * FROM vegetation")
+# entidades_anp <- dbGetQuery(con, "SELECT * FROM surfaceanp_entity")
+# names(df_anp)
+# names(df_region)
+# names(df_catmanejo)
 
 #write_excel_csv(df_anp,"datos_anp30sept24.xlsx")
 ```
  
  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+con <- dbConnect(
+  RMySQL::MySQL(),
+  dbname = "numeralia",
+  host = "localhost",  
+  username = "root",
+  password = ""
+)
+
+tables = dbListTables(con)
+df_anp <- dbGetQuery(con, "SELECT * FROM anp")
+df_region <- dbGetQuery(con, "SELECT * FROM region")
+df_anpporregiones <- dbGetQuery(con, "SELECT * FROM regionales")
+df_catmanejo <- dbGetQuery(con, "SELECT * FROM cat_manejo")
+df_vegetation <- dbGetQuery(con, "SELECT * FROM vegetation")
+entidades_anp <- dbGetQuery(con, "SELECT * FROM surfaceanp_entity")
+
+```
+
+
 ```{r echo=FALSE}
 summary_catmanejo <- df_anp %>%
   left_join(df_catmanejo, by = "id_catmanejo") %>%  
-  group_by(abreviatura) %>%   
+  group_by(abrev_cat) %>%   
   summarise(
     num_anp = n(),   
-    superficie_total = round(sum(superficie_total, na.rm = TRUE))   
+    superficie_total = round(sum(sup_total, na.rm = TRUE))   
   ) %>%
   mutate(
     total_superficie = sum(superficie_total),  
     Porcentaje = round((superficie_total / total_superficie) * 100,2)  
   ) %>%
-  select(abreviatura, num_anp, superficie_total, Porcentaje)
+  select(abrev_cat, num_anp, superficie_total, Porcentaje)
 
 tot = data.frame(
-  abreviatura = "Total", 
+  abrev_cat = "Total", 
   num_anp = sum(summary_catmanejo$num_anp),
-  superficie_total = round(sum(summary_catmanejo$superficie_total)),
+  superficie_total = round(sum(df_anp$sup_total)),
   Porcentaje = round(sum(summary_catmanejo$Porcentaje))
 )
 
@@ -89,7 +132,7 @@ datatable(summary_catmanejo,
   formatStyle(columns = colnames(summary_catmanejo), 
               `text-align` = 'center')
 
-``` 
+```
 
 <h2 style="color: #8B2323;">Superficie protegida del territorio nacional en las ANP federales</h2>
 
@@ -99,8 +142,8 @@ resumen_superficies <- df_anp %>%
 #  group_by(id_superficie) %>%  # Agrupar por id_superficie
   summarise(
     num_anp = n(),  # Contar cuántas ANP tienen ese tipo de superficie
-    superficie_t_total = sum(superficie_terrestre, na.rm = TRUE),
-    superficie_m_total = sum(superficie_marina, na.rm = TRUE)
+    superficie_t_total = sum(sup_terrestre, na.rm = TRUE),
+    superficie_m_total = sum(sup_marina, na.rm = TRUE)
   )
 
 superficies <- data.frame(
@@ -133,13 +176,10 @@ kable(superficies, format = "html", table.attr = "class='table table-striped'") 
 
 
 ```{r echo=FALSE}
-vegetacion <- dbGetQuery(con, "SELECT * FROM vegetacion")
-colnames(vegetacion) <- c("","Tipo de vegetación o ecosistema",
+vegetacion <- dbGetQuery(con, "SELECT * FROM vegetation")
+colnames(vegetacion) <- c("ID","Tipo de vegetación o ecosistema",
                           "Superficie dentro de las ANP (ha)",
                           "Porcentaje del total protegido por ANP federales (%)"
-                          
-                          
-                          
                           )
 
 #kable(vegetacion[-1], format = "html", table.attr = "class='table table-striped'") %>%
@@ -161,14 +201,15 @@ datatable(vegetacion[-1],
 ```{r echo=FALSE}
 
 entidades_anp <- read_csv("C:/Users/israel.monjaraz/OneDrive - Food and Agriculture Organization/Documentos/ProjectCodes/r/numeralia_anp/data/anp_entidad_federativa_08102024.csv",show_col_types = FALSE)
+
+entidades_anp <- dbGetQuery(con, "SELECT * FROM surfaceanp_entity")
+
+
 entidades_anp = as.data.frame(entidades_anp)
-entidades_anp$superficie = scales::comma(entidades_anp$superficie)
-entidades_anp = entidades_anp[-1]
+entidades_anp$surface_entity = scales::comma(entidades_anp$surface_entity)
+entidades_anp = entidades_anp[-c(1,3)]
 colnames(entidades_anp) =c(
-  
   "Entidad Federativa",
-  "Categoría de Manejo",
-  "Nombre del ANP",
   "Superficie dentro de la entidad (ha)"
 )
 
