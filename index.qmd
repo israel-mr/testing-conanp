@@ -32,7 +32,7 @@ body {
 }
 </style>
 
-<a href="views/info_simec.html" class="button"  target="_blank">Información Inicio SIMEC</a> <a href="views/tablas_anp.html" class="button"  target="_blank">Tablas ANP (Sept 2024)</a> <a href="views/numeralia_advc.html" class="button"  target="_blank">Numeralia ADVC (Sept 2024)</a>  
+<a href="views/info_simec.html" class="button"  target="_blank">Información Inicio SIMEC</a> <a href="views/tablas_anp.html" class="button"  target="_blank">Tablas ANP (Dic 2024)</a> <a href="views/numeralia_advc.html" class="button"  target="_blank">Numeralia ADVC (Sept 2024)</a>  
 
 
 
