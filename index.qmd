@@ -1094,7 +1094,7 @@ vegetacion$hover_text <- paste("<b>",vegetacion$type,"</b>",
 tb_vegetacion <- dbGetQuery(con, "SELECT * FROM vegetation")
 tb_vegetacion$hover_text <- paste("<b>",vegetacion$type,"</b>",
   "<br>Superficie en ANP:", "<b>",scales::comma(vegetacion$surface),"</b>", "ha",# vegetacion$Superficie_ANP,
-                               "<br>Porcentaje en ANP Federales:", "<b>",vegetacion$porcentaje,"</b>")
+                               "<br>Porcentaje en ANP Federales:", "<b>",vegetacion$percentage," % </b>")
 
 ```
 
@@ -1251,6 +1251,9 @@ resumen_ordenado$hover_text <- paste("<b>", resumen_ordenado$name, "</b>",
                                      #"<b>",resumen_ordenado$num_anp,"</b>", "ANP"
                                      )
 df1 = select(resumen_ordenado, name, y, hover_text)
+
+df1$y = round(df1$y)
+
 
 hc_map<- highchart() %>%
   hc_chart(type = 'bar',
