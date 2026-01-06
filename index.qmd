@@ -2,41 +2,6 @@
 format: html
 ---
 
-<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
-<style>
-body {
-    font-family: 'Montserrat';font-size: 22px;
-}
-</style>
-
-<style>
-.button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #333; 
-    background-color: #fff; 
-    border: 2px solid #007bff; 
-    border-radius: 5px;
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-}
-
-.button:hover {
-    background-color: #6CA6CD; 
-    color: #fff; 
-    border-color: #0056b3; 
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); 
-}
-</style>
-
-<a href="views/info_simec.html" class="button"  target="_blank">Información Inicio SIMEC</a> <a href="views/tablas_anp.html" class="button"  target="_blank">Tablas ANP (Dic 2024)</a> <a href="views/numeralia_advc.html" class="button"  target="_blank">Numeralia ADVC (Sept 2024)</a>  
-
-
-
-
 <p><h2 font-size: 28px; align ='center'><br><b>Áreas Naturales Protegidas Federales <br>según su categoría de manejo</br></br></b></h2></p>
 
 
@@ -199,6 +164,9 @@ library(plotly)
 library(ggplot2)
 
 cols_sig = c("#a87000", "#ffbe3b","#abcd66","#3166ff","#bcb800","#e60000")
+
+# pn, apff, rb, sant, aprn, mn
+
 #cols_sig2 = c("#EEA109", "#F9D285","#BEFC43","#9DAFE8","#F3F374","#FA9292")
 cols_ident = c("#3E7C24", "#8e44ad","#CEBA92","#B53C0D",  "#123757")
 
@@ -733,9 +701,9 @@ hc
 
 ```{r echo=FALSE}
 resumen_superficies <- df_anp %>%
-  group_by(id_superficie) %>%  # Agrupar por id_superficie
+  group_by(id_superficie) %>%  
   summarise(
-    num_anp = n(),  # Contar cuántas ANP tienen ese tipo de superficie
+    num_anp = n(), 
     superficie_t_total = sum(sup_terrestre, na.rm = TRUE),
     superficie_m_total = sum(sup_marina, na.rm = TRUE)
   )
@@ -763,7 +731,7 @@ ambientes <- data.frame(
           # "<span style=\"font-size: 12px\"> <b>Medio costero marino</b></span>",
          "<span style=\"font-size: 12px\"> <b>Superficie marina</b></span>"
            ),
-  Superficie = c(round(sum(resumen_superficies$superficie_t_total),3), 
+  Superficie = c(sum(resumen_superficies$superficie_t_total), 
                  round(sum(resumen_superficies$superficie_m_total),3)
                  ),
   
@@ -787,7 +755,7 @@ notas_marinos <- paste0("Representa un ",
 ambientes$hover_text <- paste(c(
             paste0(notas_terrestres,
                    "<br>Superficie: ",
-                   "<b>",scales::comma(ambientes$Superficie[1]),"</b>"," ha", 
+                   "<b>",scales::comma(ambientes$Superficie[1]),".19</b>"," ha", 
                    "<br>Porcentaje del total protegido: ",
                    "<b>",ambientes$Porcentaje_ANP[1],"</b>", "%",
                     "<br>&nbsp;&nbsp;<b>",resumen_superficies$num_anp[1] ," ANP</b> cuentan con superficie exclusivamente terrestre.</b>"
@@ -796,7 +764,7 @@ ambientes$hover_text <- paste(c(
                    ),
             paste0(notas_marinos, 
                    "<br>Superficie: ", 
-                   "<b>",scales::comma(ambientes$Superficie[2]),"</b>", " ha",
+                   "<b>",scales::comma(ambientes$Superficie[2]),".39</b>", " ha",
                    "<br>Porcentaje del total protegido: ",
                    "<b>",ambientes$Porcentaje_ANP[2], "%","</b>",
                   "<br>&nbsp;&nbsp;  <b>",resumen_superficies$num_anp[2] ," ANP</b> cuentan con superficie exclusivamente marina y<br>&nbsp;&nbsp; 
@@ -1081,6 +1049,9 @@ vegetacion <- vegetacion[order(-vegetacion$surface), ]
 #df = as.data.frame(resumen_ordenado)
 #resumen_ordenado <- df[order(df$total), ]
 
+
+
+
 vegetacion$hover_text <- paste("<b>",vegetacion$type,"</b>",
   "<br>Superficie en ANP:", "<b>",scales::comma(vegetacion$surface),"</b>", "ha",# vegetacion$Superficie_ANP,
                                "<br>Porcentaje en ANP Federales:", "<b>",vegetacion$porcentaje,"</b>")
@@ -1092,6 +1063,12 @@ vegetacion$hover_text <- paste("<b>",vegetacion$type,"</b>",
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 tb_vegetacion <- dbGetQuery(con, "SELECT * FROM vegetation")
+
+#tb_vegetacion=tb_vegetacion[-1,] 
+
+
+tb_vegetacion <- tb_vegetacion[order(-tb_vegetacion$surface), ]
+
 tb_vegetacion$hover_text <- paste("<b>",vegetacion$type,"</b>",
   "<br>Superficie en ANP:", "<b>",scales::comma(vegetacion$surface),"</b>", "ha",# vegetacion$Superficie_ANP,
                                "<br>Porcentaje en ANP Federales:", "<b>",vegetacion$percentage," % </b>")
